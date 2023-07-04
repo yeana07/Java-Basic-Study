@@ -4,7 +4,7 @@
 ## 목차 
 |아이템|자료|날짜|
 |------|---|---|
-|1. 클래스| https://github.com/yeana07| 23.06.19
+|1. 클래스| [https://github.com/yeana07](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week1)| 23.06.19
 |2. 상속,인터페이스|--|--|
 |3. 중첩 클래스와 인터페이스, 예외|--|--|
 |4. |--|--|
