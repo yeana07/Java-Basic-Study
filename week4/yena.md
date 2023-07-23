@@ -68,7 +68,7 @@ String의 hashCode()는 같은 문자열일 경우 동일한 해시코드를 리
 
 필드값을 복사해서 객체를 복제한다. (기본 타입이면 값 복사, **참조 타입이면 객체 번지 복사**)
 
-Object의 clone()을 이용하려면 원본 객체는 반드시 java.lang.Clonable 인터페이스를 구현하고 있어야 한다.(의도적 표시)
+Object의 clone()을 이용하려면 원본 객체는 반드시 java.lang.Cloneable 인터페이스를 구현하고 있어야 한다.(의도적 표시)
 
 #### 깊은 복제(deep clone)
 
@@ -79,7 +79,7 @@ Object의 clone()을 재정의해 참조 객체를 복제하는 코드를 직접
 
 java.util.Objects 클래스는 정적 메소드들로 구성된 Object의 유틸리티 클래스이다.
 
-#### 객체 비교 compare(T a, T b, Conparator<T> c)
+#### 객체 비교 compare(T a, T b, Comparator<T> c)
 
 두 객체를 비교자(Comparator)로 비교해 int 값을 리턴한다.  
 compare()를 사용하려면 Comparator<T> 인터페이스를 구현해서 재정의하고 사용한다.
@@ -103,7 +103,7 @@ compare()를 사용하려면 Comparator<T> 인터페이스를 구현해서 재�
 -> 클래스가 hashCode() 재정의할때 리턴값 생성하기 위해 사용  
 -> 클래스의 여러 필드들의 해시코드를 한번에 얻기 위해 사용
 
-#### 해시코드 생성 hasoCode()
+#### 해시코드 생성 hashCode()
 
 `Ojbects.hashCode(Object o)`는 매개값 객체의 해시코드를 리턴하는데 매개값이 null이면 0이 리턴된다.
 
@@ -232,11 +232,10 @@ String의 split()은 정규 표현식으로 구분하고, StringTokenizer는 문
 
 #### split()
 
-String 클래스의 split()은 매개값으로 주어진 정규 표현식 또는 특정 문자를 기준으로 문자열을 나누어 배열로 생성한다. (구분자로 사용할 특정 문자 또는 정규 표현식이 여러개면 |로 연결)
+String 클래스의 split()은 매개값으로 주어진 정규 표현식 또는 특정 문자를 기준으로 문자열을 나누어 배열로 생성한다. (구분자로 사용할 특정 문자 또는 정규 표현식이 여러개면 | 로 연결)
 
 ```java
 String text = "체리&옥수수,감자,고구마-자두";
-
 String[] names = text.split("&|,|-");
 ```
 
@@ -249,12 +248,13 @@ StringTokenizer 객체를 생성할 때 첫번째 매개값으로 전체 문자�
 - `int countTokens()`: 꺼내지 않고 남아있는 토큰 수
 - `boolean hasMoreTokens()`: 남아 있는 토큰 유무
 - `Stirng nextToken()`: 토큰 하나씩 꺼내기(토큰 없으면 java.util.NosuchElementException)
-  -> 먼저 hasMoreTokens()로 꺼내올 토큰 있는지 조사 후 nextToken() 사용
+
+-> 먼저 hasMoreTokens()로 꺼내올 토큰 있는지 조사 후 nextToken() 사용
 
 ### StringBuffer, StringBuilder 클래스
 
 String은 내부의 문자열을 수정할 수 없다. 문자열을 결합하는 + 연산자를 사용할수록 그만큼 String 객체의 수가 늘어나 프로그램 성능을 느리게 하는 요인이 된다.  
-문자열 변경 작업이 많을 경우 String 클래스 보다 java.lang패키지의 StringBuffer 또는 StringBuilder 클래스를 사용하는게 좋다.  
+**문자열 변경 작업이 많을 경우 String 클래스보다 java.lang 패키지의 StringBuffer 또는 StringBuilder 클래스를 사용**하는게 좋다.  
 이 두 클래스는 데이터를 임시로 저장하는 메모리인 내부 버퍼 공간에 문자열을 저장하고, 그 안에서 수정 작업을 할 수 있다.
 
 - StringBuffer: 멀티 스레드 환경에서 사용 하도록 동기화 적용.
@@ -262,7 +262,7 @@ String은 내부의 문자열을 수정할 수 없다. 문자열을 결합하는
 
 #### StringBuilder 생성과 초기 버퍼
 
-StringBuilder의 기본 생성자는 16개의 문자열을 저장하는 초기 버퍼를 만들고, 매개값으로 초기 버퍼의 개수를 지정할 수 있다. 버퍼가 부족할 경우 자동으로 크기를 늘리기 때문에 초기 버퍼 크기는 그다지 중요하지 않다. (매개값 Stirng도 가능)
+StringBuilder의 기본 생성자는 16개의 문자열을 저장하는 초기 버퍼를 만들고, 매개값으로 초기 버퍼의 개수를 지정할 수 있다. 버퍼가 부족할 경우 자동으로 크기를 늘리기 때문에 초기 버퍼 크기는 그다지 중요하지 않다. (매개값 String도 가능)
 
 ### 정규 표현식과 Pattern 클래스
 
@@ -355,13 +355,13 @@ java.lang 패키지에 포장 클래스가 있는데 각 기본 타입에 대응
 #### 포장 객체 값 비교
 
 포장 객체 일부는 내부 값을 비교하기 위해 객체의 참조를 비교하는 == 또는 != 연산자를 사용 할 수 없다(일부 규칙에서만 사용 가능).  
-직접 내부 값을 언박싱해서 비교하건, equals()로 내부 값을 비교 하도록 오버라이딩 해야 한다.
+직접 내부 값을 언박싱해서 비교하거나, equals()로 내부 값을 비교 하도록 오버라이딩 해야 한다.
 
 ### Math, Random 클래스
 
 #### Math 클래스
 
-java.lang.Math 클래스의 메소드는 모두 정적 메소드이고 수학 계산에 사용된다..
+java.lang.Math 클래스의 메소드는 모두 정적 메소드이고 수학 계산에 사용된다.
 
 - `int abs(int a)`, `doulbe abs(double a)`: 절대값 리턴
 - `double ceil(double a)`: 올림값
