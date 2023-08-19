@@ -2,7 +2,7 @@
 '이것이 자바다' 책 스터디입니다. 
 
 ## 목차 
-|아이템|자료|-|
+|아이템|링크|-|
 |------|---|---|
 |1. 클래스|[week1](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week1)|
 |2. 상속,인터페이스|[week2](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week2)|--|
