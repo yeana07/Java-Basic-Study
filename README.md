@@ -10,7 +10,7 @@
 |4. 기본 API 클래스 |[week4](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week4)|--|
 |5. 멀티 스레드|[week5](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week5)|--|
 |6. 제네릭, 람다식|[week6](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week6)|--|
-|7. 컬렉션 프레임워크, 스트림과 병렬처리|[week7(https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week7)]|--|
+|7. 컬렉션 프레임워크, 스트림과 병렬처리|[week7](https://github.com/Weekly-JYN-Study/Java-Basic-Study/tree/main/week7)|--|
 
 
 
