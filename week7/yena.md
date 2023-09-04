@@ -86,7 +86,7 @@ Set 컬렉션은 저장 순서를 유지하지 않고, 객체를 중복해서 �
   - `Iterator<E> iterator()`: 저장된 객체를 한 번씩 가져오는 반복자 리턴
   - `int size()`
 - 객체 삭제
-  - `void clean()`
+  - `void clear()`
   - `boolean remove(Obejct o)`
 
 #### Set 컬렉션의 반복자 Iterator
@@ -112,7 +112,7 @@ HashSet은 객체들을 순서 없이 저장하고 동일한 객체는 중복 �
 
 문자열을 HashSet에 저장하면 같은 문자열을 갖는 String 객체는 동등한 객체로 간주되도록 String 클래스가 `hashCode()`와 `equals()`를 재정의 하고 있다.
 
-필요 시 사용자 정의 클래스를 만들고 `hashCode()`, `equals()`를 재정의 해서 사용하면 된다.
+필요시 사용자 정의 클래스를 만들고 `hashCode()`, `equals()`를 재정의 해서 사용하면 된다.
 
 ### Map 컬렉션
 
@@ -154,7 +154,7 @@ HashMap은 대표적인 Map 컬렉션이다. 키로 사용할 객체는 `HashCod
 
 주로 키 타입은 String을 많이 사용한다.
 
-키와 값이 타입은 기본 타입은 사용할 수 없고, 클래스 및 인터페이스 타입만 가능하다.
+키와 값 타입은 기본 타입은 사용할 수 없고, 클래스와 인터페이스 타입만 사용 가능하다.
 
 #### HashTable
 
@@ -166,14 +166,14 @@ HashTable은 **동기화된(synchronized) 메소드**로 구성되어 있어 멀
 
 Properties는 HashTable의 하위 클래스이기 때문에 모든 특징을 그대로 가진다.
 
-차이점으로 Properties는 키와 값을 String 타입으로 제한한 컬렉션이다. ( 키와 값 `=`로 연결)
+차이점으로 Properties는 키와 값을 String 타입으로 제한한 컬렉션이다. (키와 값 `=`로 연결)
 
 Properties는 애플리케이션 옵션 정보, DB 연결 정보, 다국어 정보가 저장된 프로퍼티 파일을 읽을 때 주로 사용한다.
 
 ### 검색 기능을 강화시킨 컬렉션
 
 컬렉션 프레임워크는 검색 기능을 강화 시킨 TreeSet과 TreeMap을 제공한다. 이진 트리(Binary Tree)
-를 이용해 계층적 구조(Tree)구조를 가지며 객체를 저장한다.
+를 이용해 계층적 구조(Tree)를 가지며 객체를 저장한다.
 
 #### 이진 트리 구조
 
@@ -186,11 +186,13 @@ Properties는 애플리케이션 옵션 정보, DB 연결 정보, 다국어 정�
 
 #### TreeSet
 
-이진 트리 기반 Set 컬렉션이다. 하나의 노드는 노트값인 value와 왼쪽 오른쪽 자식 노드를 참조하기 위한 두 개의 변수로 구성된다. TreeSet에 객체를 저장하면 자동 정렬된다.
+이진 트리 기반 Set 컬렉션이다. 하나의 노드는 노드값인 value와 왼쪽 오른쪽 자식 노드를 참조하기 위한 두 개의 변수로 구성된다. TreeSet에 객체를 저장하면 자동 정렬된다.
 
 #### TreeSet 컬렉션 검색 관련 메소드
 
 TreeSet 객체 생성 시 Set 객체가 아닌 Set 인터페이스 변수에 대입해서 검색 관련 메소드 사용하기.
+
+메소드들의 리턴 타입은 모두 `E`
 
 - `E first()`
 - `E last()`
@@ -235,7 +237,7 @@ Map타입 변수 말고 TreeMap 클래스 타입 변수에 트리맵 객체 대�
 
 #### TreeMap 정렬과 관련된 메소드들
 
-- `NavigablerSet<E> descendingKeySet()`
+- `NavigableSet<E> descendingKeySet()`
 - `NavigableMap<E> descendingMap()`
 
 NavigableMap 객체는 TreeMap의 검색 관련 메소드들과 정렬 순서를 바꾸는 메소드를 제공한다.
@@ -260,7 +262,7 @@ Comparable을 구현 하지 않는 TreeSet, TreeMap을 정렬하려면 생성자
 
 정렬자는 Comparator를 구현한 객체로, `compare()` 메소드가 있다.
 
-- `compare(T o1, T o2)`: o1과 o1이 동등하면 0, o1이 앞에 오게 하려면 음수를, o1이 뒤에 오게 하려면 음수 리턴
+- `compare(T o1, T o2)`: o1과 o2가 동등하면 0, o1이 앞에 오게 하려면 음수를, o1이 뒤에 오게 하려면 양수 리턴
 
 ### LIFO와 FIFO 컬렉션
 
@@ -299,19 +301,19 @@ ArrayList, HashSet, HashMap은 멀티 스레드 환경에서 안전하지 않다
 -> 병렬적으로 컬렉션 요소 처리 못 함
 
 자바는 멀티 스레드가 컬렉션의 요소를 병렬적으로 처리 하도록 특별한 컬렉션을 제공한다.  
--> java.util.concurrent 패키지의 `ConcurrentHashMap`, `ConcurrentLinkesQueue`
+-> java.util.concurrent 패키지의 `ConcurrentHashMap`, `ConcurrentLinkedQueue`
 
 `ConcurrentHashMap`은 **부분(segment)잠금**을 사용한다. 처리 하는 요소가 포함된 부분만 잠금하고 나머지 부분은 변경 가능.
 
-`ConcurrentLinkesQueue`은 **락-프리(lock-free) 알고리즘**을 구현한 컬렉션이다. 여러 개의 스레드가 동시 접근할 경우, 잠금을 사용하지 않고도 최소한 하나의 스레드가 안전하게 요소를 저장하거나 얻도록 해준다.
+`ConcurrentLinkedQueue`은 **락-프리(lock-free) 알고리즘**을 구현한 컬렉션이다. 여러 개의 스레드가 동시 접근할 경우, 잠금을 사용하지 않고도 최소한 하나의 스레드가 안전하게 요소를 저장하거나 얻도록 해준다.
 
 ## 관심 가는 내용
 
 #### 고정된 객체들로 구성된 List 생성하기
 
-`Arrays.List(T...a)`를 사용하기. T 타입 파라미터에 맞게 매개값을 순차적으로 입력하거나 `T[]`배열을 매개값으로 주면된다.
+`Arrays.asList(T...a)`를 사용하기. T 타입 파라미터에 맞게 매개값을 순차적으로 입력하거나 `T[]`배열을 매개값으로 주면된다.
 
-#### 전체 객체 하나씩 가져오기 - 코드
+#### Map 전체 객체 하나씩 가져오기 - 코드
 
 - `keySet()`사용
   ```java
