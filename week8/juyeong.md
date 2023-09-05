@@ -8,7 +8,7 @@
 스트림 이전에는 List<String> 컬렉션에서 값을 하나씩 뽑기 위해 Iterator 반복자 사용
 스트림 이후로는 list.stream();, stream.forEach를 사용
 
-	```java
+	``` java
 	List<String> list = Arrays.asList("주영", "예나");
 	Iterator<String> Iterator = list.iterator();
 	while(interator.hasNext()) {
@@ -19,7 +19,7 @@
 
 이 코드를 스트림을 사용하면
 
-	```java
+	``` java
 	List<String> list = Arrays.asList("주영", "예나");
 	Stream<String> stream = list.stream();
 	stream.forEach (name -> System.out.println(name));
@@ -79,24 +79,178 @@ index를 사용한 for문, Iterator를 사용한 while문이 여기에 해당한
 
 
 ## 16.2 스트림의 종류
+Base Stream 아래에
+Stream, IntStream, LongStream, DoubleStream이 있다.
+
+> 베이스 스트림에는 공통 메소드들이 정의되어 있을 뿐, 코드에서 직접적으로 사용되지는 않는다. 하위 스트림들이 직접적으로 이용된다.
+- Stream : 객체 요소를 처리
+- IntStream, LongStream, DoubleStream : 인트, 롱, 더블 요소를 처리한다.
+
+**이 스트림 인터페이스의 구현 객체는 다음과 같은 다양한 소스(주로 컬렉션, 배열)로부터 얻을 수도 있다.** 
+![스트림 소스](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F9995E64B5A5DBE5403)
+
+
+컬렉션으로부터, 배열로부터, 숫자로부터, 파일로부터 (버퍼드리더 사용), 디렉토리로부터 스트림을 얻을 수 있고 예제는 P791~794 참고할 것
+
 
 ## 16.3 스트림 파이프라인
 
+- 리덕션(Reduction) : 대량의 데이터를 가공해서 축소하는 것
+- 데이터의 합계, 카운팅, 최대/최솟값 등을 구하는 것이 대표적인 리덕션이다. 
+- 컬렉션 요소를 리덕션의 요소로 바로 집계할 수 없는 경우에는, **집계하기 좋도록 중간처리 (필터링, 매핑, 정렬, 그룹핑 등)이 필요하다.**
+
+### 중간처리와 최종처리
+> 스트림 파이프라인
+
+
+- 스트림은 데이터 처리를 파이프 라인으로 처리한다. 
+- 그림을 보면 쉽게 이해가는데, 파이프라인은 여러 개의 스트림이 연결된 구조다.
+  ![스트림 파이프라인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F99BBF93D5A5DF1F007)
+- 재밌는 것은 중간 스트림이 생성될 때 요소들이 바로 중간처리 되는 것이 아니라, 최종 처리가 시작되기 전까지 지연(lazy) 되다가, 최종 처리가 시작되면 요소가 하나씩 중간처리 스트림에서 메소드를 타고 최종처리까지 오게 된다.
+- 메소드를 탄 뒤 처리된 스트림을 리턴하고, 리턴한 스트림에서 다시 다음 중간처리 메소드를 호출하여 파이프라인을 형성한다. 
+
+	```java
+	double ageAvg = list.stream() //오리지날 스트림
+		.filter(m -> m.getSex() == member.MALE) //중간 처리 스트림
+		.mapToInt(Member :: getAge) 
+		.average() //최종처리
+		.getAsDouble();
+	```
+
+### 중간처리 메소드와 최종처리 메소드
+- 중간처리
+![중간처리](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2Fbde37c9c-b959-4246-a0a1-d7ac7f707703%2Fimage.png)
+
+-최종처리
+![최종처리](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F0bcc4547-1064-4a79-b092-a43662558c8b%2Fimage.png)
+
+- 중간처리 메소드 : 리턴타입이 스트림
+- 최종처리 메소드 : 리턴타입이 기본타입 or OptionalXXX
+- 위의 표에서 공통의 의미는 스트림,인트스트림,롱스트림,더블스트림에서 모두 제공된다는 뜻
+  
 ## 16.4 필터링
+- 걸러내는 역할. 
+  ![필터링](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2Fb43b22d8-c75d-411e-b111-4f8e5892ac39%2Fimage.png)
+
+- distinct(), filter() : 모든 스트림이 가진 공통 메소드
+
+  - distinct() : 중복을 제거(Object.equals()로 비교하여 true 리턴하면 제거함)
+  - filter() : 매개값으로 주어진 Predicate가 true를 리턴하면 걸러냄
+
+  
 
 ## 16.5 매핑
+- 스트림의 요소를 다른 요소로 대체하는 작업.
+- flatXXX(), mapXXX(), asDoubleStream(), asLongStream(), boxed()가 있다.
+  - flatXXX(): 요소를 대체하는 복수개의 요소들로 구성된 새로운 스트림을 리턴한다.
+  - ![플랫](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F296d212a-7206-4d20-b4b9-0f768b735765%2Fimage.png)
+  - ![플랫 메소드 종류](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F5d419e3a-ee63-43d9-9be9-c1d0446885f0%2Fimage.png)
+    ```java
+	inputList1.stream()
+		.flatMap(data -> Arrays.stram(data.split(" ")))
+		.forEach(word -> System.out.println(word))
+	```
+  - mapXXX()
+    - 요소를 대체하는 요소로 구성된 새로운 스트림을 리턴한다.
+    - ![맵](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F0a4bee0c-ece8-4cce-9d79-dc6bf26ba736%2Fimage.png)
+  - asDoubleStream(), asLongStream(), boxed()
+    - ![애즈애즈](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F262237b3-d4bb-4912-8e61-ee9a9eb867a4%2Fimage.png)
 
 ## 16.6 정렬
+- 스트림은 요소가 최종 처리되기 전에, **중간단계에서 요소를 정렬해서 최종처리 순서를 변경** 할 수 있다.
+- 정렬메소드는 다음과 같다
+![정렬sorted](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2Fe8cf60a1-8cc5-4a30-a86f-c3ba0f349493%2Fimage.png)
+
+- 객체 요소일 경우, 클래스가 Comparable을 구현하지 않으면 sorted()메소드를 호출했을 때 클래스캐스트익셉션(ClassCastException)이 발생하기 때문에 Comparable을 구현한 요소에서만 sorted()메소드를 호출해야 한다. (예제 P806)
 
 ## 16.7 루핑
+- 루핑은 요소 전체를 반복하는 것
+- Peek(), forEach() 메소드가 있다.
+- 두 메소드는 루핑 기능에서는 동일 but 동작 방식이 다르다.
+- Peek() : 중간처리 메소드
+  - 중간 처리 단계에서 전체 요소를 루핑하며 추가 작업하기 위해 사용
+  - 최종처리 메소드가 실행되지 않으면 지연
+    - 반드시 최종 처리 메소드가 호출되어야 동작
+- forEach() : 최종처리 메소드
+  - 파이프라인 마지막에 루핑하여 요소를 하나씩 처리
+  - 요소를 소비하는 최종 처리 메소드
+    - sum()과 같은 다른 최종 메소드 호출 불가
+
 
 ## 16.8 매칭
+- 최종 처리 단계에서 요소들이 특정 조건에 만족하는지 조사하는 것
+- 세 가지 메소드가 있다.
+  1. allMatch() 메소드
+	- 모든 요소들이 매개값으로 주어진 Predicate의 조건을 만족하는지 조사
+  2. anyMatch()메소드
+	- 최소한 한 개의 요소가 매개값으로 주어진 Predicate조건을 만족하는지 조사
+  3. noneMatch() 메소드
+	- 모든 요소들이 매개값으로 주어진 Predicate의 조건을 만족하지 않는지 조사
+
+![매칭메소드](https://velog.velcdn.com/images%2Fdev_jhjhj%2Fpost%2F8dd58f13-dab5-4f4a-8833-57b5e18a738a%2FallMatch.png)
 
 ## 16.9 기본 집계
+- 최종 처리 기능으로, 요소들을 처리해서 카운팅, 합계, 평균, 최대/최소값등 하나의 값으로 산출하는 것
+- 대량의 데이터를 가공해서 리덕션하는 것
+- 1. 스트림이 제공하는 기본 집계
+- ![기본집계 메소드](https://velog.velcdn.com/images%2Fdev_jhjhj%2Fpost%2Ff2b24c3f-d65a-456e-93bd-a4012ab7372b%2F%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%85%E1%85%B5%E1%86%B7%E1%84%8B%E1%85%B5%E1%84%8C%E1%85%A6%E1%84%80%E1%85%A9%E1%86%BC%E1%84%92%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%8C%E1%85%B5%E1%86%B8%E1%84%80%E1%85%A8.png)
+  
+- 2. Optional 클래스
+  - Optional, OptionalDouble, OptionalInt, OptionalLong 클래스
+  - 저장하는 값의 타입만 다를 뿐 제공하는 기능은 거의 동일
+  - 단순히 집계 값만 저장하는 것이 아님
+  - 집계 값이 존재하지 않을 경우 디폴트 값을 설정 가능
+  - 집계 값을 처리하는 Consumer도 등록 가능
+  - Optional 클래스들이 제공하는 메소드들
+  - ![옵셔널](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F030037d6-e7bb-4104-946b-ac85f44a032f%2Fimage.png)
+
+```java
+  public static void main(String[] args) {
+        int[] intArr = {1, 2, 3, 4, 5, 6, 7};
+
+        long count = Arrays.stream(intArr)
+                .filter(a -> a % 2 == 0)
+                .count();
+        System.out.println("2의 배수 개수 : " + count);
+
+        long sum = Arrays.stream(intArr)
+                .filter(n -> n % 2 == 0)
+                .sum();
+        System.out.println("2의 배수인 요소들의 합 : " + sum);
+
+        double avg = Arrays.stream(intArr)
+                .filter(n -> n % 2 == 0)
+                .average()
+                .getAsDouble();
+        System.out.println("2의 배수인 요소들의 평균, double 타입 : " + avg);
+
+        int max = Arrays.stream(intArr)
+                .filter(n -> n % 2 == 0)
+                .max()
+                .getAsInt();
+        System.out.println("2의 배수인 요소들의 최댓값, double 타입 : " + max);
+
+        int first = Arrays.stream(intArr)
+                .filter(n -> n % 3 == 0)
+                .findFirst()
+                .getAsInt();
+        System.out.println("3의 배수인 요소들 중에서 가장 첫 요소 : " + first);
+    }
+}
+```
 
 ## 16.10 커스텀 집계
+- 본 집계 메소드 외에도 프로그램화해서 다양한 집계 결과물을 만들 수 있도록 reduce() 메소드를 제공
+- ![커스텀 집계](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F62e55513-b066-4dd9-a412-e5b04ec3da10%2Fimage.png)
 
 ## 16.11 수집
+- 스트림은 요소들을 필터링 또는 매핑 한 후 요소들을 수집하는 최종 처리 메소드인 collect()를 제공한다.
+- 이 메소드를 사용하면 필요한 요소만 컬렉션으로 담을 수 있음
+- 요소들을 그룹핑한 후 집계(리덕션)도 가능!
+
+
+
+
 
 ## 16.12 병렬 처리
 
