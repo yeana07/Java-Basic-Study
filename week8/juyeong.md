@@ -244,22 +244,97 @@ Stream, IntStream, LongStream, DoubleStream이 있다.
 - ![커스텀 집계](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F62e55513-b066-4dd9-a412-e5b04ec3da10%2Fimage.png)
 
 ## 16.11 수집
-- 스트림은 요소들을 필터링 또는 매핑 한 후 요소들을 수집하는 최종 처리 메소드인 collect()를 제공한다.
+1. 스트림은 요소들을 필터링 또는 매핑 한 후 요소들을 수집하는 최종 처리 메소드인 collect()를 제공한다.
 - 이 메소드를 사용하면 필요한 요소만 컬렉션으로 담을 수 있음
 - 요소들을 그룹핑한 후 집계(리덕션)도 가능!
 
+2. 필터링한 요소 수집
+   > collect(Collect<T,A,R> collector)
+   - Stream의 collect 메소드는 필터링 또는 매핑된 요소들을 새로운 컬렉션에 수집하고, 이 컬렉션을 리턴한다.
+   - 매개값 Collector 
+     - 어떤 요소를 어떤 컬렉션에 수집할 것인지 결정
+     - Colletor의 타입 파라미터 **T**는 요소
+     - **A**는 누적기 (accumulator)
+     - **R**은 요소가 저장될 컬렉션
+     - > 해석하면, T요소를 A 누적기가 R에 저장한다는 의미
+     - Collector 클래스의 정적 메소드
+     - ![정적메소드](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F53be3d50-bb87-4f10-a3fe-cd41fa03e241%2Fimage.png)
 
 
+3. 사용자 정의 컨테이너에 수집
+   - 스트림은 요소들을 필터링or매핑하여 사용자 정의 컨테이너 객체에 수집할 수 있도록 함
+   - 이를 위해 추가적인 collector 메소드들이 있음
+   - ![추가메소드](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F1fb00d87-9c9e-4185-af2b-737920a0f1e9%2Fimage.png)
+
+4. 요소를 그룹핑해서 수집
+   - collect() 호출 시 Collectors의 groupingBy() 또는 groupingByConcurrent()가 리턴하는 Collector를 매개값 대입
+     - 컬렉션 요소들을 그루핑해서 Map 객체 생성
+     - ![추가자료](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F8a1f4105-e6ce-4ee4-87f3-8bda480d99d3%2Fimage.png)
+
+5. 그루핑 후 매핑 및 집계
+   - Collectors.groupingBy()메소드
+    - 그룹핑 후, 매핑이나 집계(평균, 카운팅, 연결, 최대, 최소, 합계)를 할 수 있도록 두 번째 매개값으로 Collector를 가질 수 있는 특성
+      - ![추가자료](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2Fbc0debad-031c-4592-8a18-b7805aafbc3e%2Fimage.png)
 
 
 ## 16.12 병렬 처리
+- 멀티코어 CPU 환경에 쓰임
+- 하나의 작업을 분할해서 각각의 코어가 병렬적으로 처리하는 것
+- 병렬 처리의 목적 : 작업 시간 줄이기 :)
+- 자바 8부터 요소를 병렬 처리할 수 있도록 병렬 스트림을 제공한다.
+
+### 동시성과 병렬성
+- 동시성 (Concurrency) : 멀티 작업을 위해 **멀티 스레드**가 번갈아가며 실행하는 성질
+- 병렬성 (Parallerliism) : 멀티 작업을 위해 **멀티 코어**를 이용해서 동시에 실행하는 성질
+
+    - 싱글 코어 CPU를 이용한 멀티 작업
+      - 병렬적으로 실행되는 것처럼 보이지만, 실제로는 번갈아가며 실행하는 동시성 작업
+  
+### 동시성과 병렬성의 비교 
+![비교](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F439e49f8-ae2b-41ae-893d-a0b5874f75be%2Fimage.png)
 
 
+### 병렬성의 종류
+1. 데이터 병렬성
+   1. 전체 데이터를 쪼개서 서브 데이터들로 만든 뒤, 병렬 처리하여 작업을 빨리 끝냄
+   2. 자바 8에서 지원하는 병렬 스트림은 데이터 병렬성을 구현한 것
+   3. 멀티 코어의 수많은 대용량 요소를 서브 요소들로 나누고,
+   4. 각각의 서브 요소들을 분리된 스레드에서 병렬처리
+2. 작업 병렬성
+   1. 작업 병렬성은 서로 다른 작업을 병렬 처리하는 것
+   2. eg.웹서버 
+      1. 각각의 브라우저에서 요청한 내용을 개별 스레드에서 병렬로 처리
+
+### 포크 조인 프레임워크
+1. 런타임 시 포크조인 프레임워크 동작
+2. 포크 단계에서는 전체 데이터를 서브 데이터로 분리
+3. 서브 데이터를 멀티 코어에서 병렬로 처리
+4. 조인 단계에서는 서브 결과를 결합해서 최종 결과 도출
+
+### 포크 조인 프레임워크의 원리
+![포크조인](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2F75994d55-bf2d-4e32-9906-4527d560ef8c%2Fimage.png)
+- ForkJoinPool 사용해 작업 스레드 관리
+
+### 병렬 스트림 생성
+- 코드에서 포크조인 프레임워크 사용해도 병렬처리 가능
+- 병렬 스트림 이용할 경우 백그라운드에서 포크조인 프레임워크 동작
+  - 매우 쉽게 구현해 사용 가능하다.
+- 병렬 스트림을 얻는 메소드
+  - parallelStream() 메소드
+    : 컬렉션으로부터 병렬 스트림을 바로 리턴
+  - parallel() 메소드
+    : 순차 처리 스트림 병렬 처리 스트림으로 변환해서 리턴
 
 
+### 병렬 처리가 정상적으롤 이루어질 때 CPU의 상태
+- 쿼드코어 CPU
+- ![쿼드코어](https://velog.velcdn.com/images%2Fansalstmd%2Fpost%2Fddca5df3-0d76-43fc-8e81-e02d3d4d57ac%2Fimage.png)
 
-
-
+### 병렬처리 성능
+- 병렬 처리에 영향을 미치는 3가지 요인
+1. 요소의 수와 요소당 처리 시간 : 요소 수가 적고 요소당 처리 시간 짧으면 순차 처리가 빠름
+2. 스트림 소스의 종류 : ArrayList, 배열은 인덱스로 요소 관리 -> 병렬처리가 빠름
+3. 코어(Core)의 수 : 싱글 코어의 경우 순차 처리가 빠름
 
 
 
